@@ -10,7 +10,10 @@
  * http://creativecommons.org/publicdomain/zero/1.0/
  */
 
-function Bit#(64) keccakRoundConstant(Bit#(5) round_number) =
+import BUtils::*;
+import KeccakGlobals::*;
+
+function Bit#(N) keccakRoundConstant(LBit#(NumRound) round_number) =
 	case (round_number)
 		'b00000: 'h0000000000000000;
 		'b00001: 'h0000000000000001;

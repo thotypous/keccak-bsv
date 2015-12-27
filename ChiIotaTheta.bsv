@@ -33,9 +33,9 @@ function Out chi_iota_theta(
 	// chi
 	function a chi_f(a in) provisos (PrimUpdateable#(a,ae), PrimUpdateable#(ae,aee), Bitwise#(aee));
 		a out = ?;
-		for (Integer y = 0; y < 5; y = y + 1)
-			for (Integer x = 0; x < 5; x = x + 1)
-				out[y][x] = in[y][x] ^ (~in[y][(x+1)%5] & in[y][(x+2)%5]);
+		for (Integer y = 0; y < np; y = y + 1)
+			for (Integer x = 0; x < ns; x = x + 1)
+				out[y][x] = in[y][x] ^ (~in[y][(x+1)%ns] & in[y][(x+2)%ns]);
 		return out;
 	endfunction
 	SubState chi_out = chi_f(chi_in);
@@ -52,7 +52,7 @@ function Out chi_iota_theta(
 	function bxor(a,b) = a^b;
 	function b col_xor(Vector#(n,a) in) provisos (PrimUpdateable#(a,ae), Literal#(ae), Bitwise#(ae), PrimUpdateable#(b, ae));
 		b out = ?;
-		for (Integer x = 0; x < 5; x = x + 1)
+		for (Integer x = 0; x < ns; x = x + 1)
 			out[x] = foldr(bxor, 0, map(fsel(x), in));
 		return out;
 	endfunction
@@ -60,17 +60,17 @@ function Out chi_iota_theta(
 	KRow theta_parity_first_round = col_xor(k_slice_theta_p_in);
 	KRow theta_parity_after_chi = col_xor(chi_out_for_theta_p);
 	theta_parity_after_chi[0] = theta_parity_after_chi[0] ^ theta_parity_bit_iota_inp;
-	KRow theta_parity_out = pack(map(fsel(valueOf(BitPerSubLane)-1), sum_sheet));
+	KRow theta_parity_out = pack(map(fsel(bitPerSubLane-1), sum_sheet));
 	KRow theta_parity =
 			(first_round && first_block) ? theta_parity_first_round :
 			first_block ? theta_parity_after_chi :
 			theta_parity_inp;
 	SubState theta_out = ?;
-	for (Integer y = 0; y < 5; y = y + 1) begin
-		for (Integer x = 0; x < 5; x = x + 1) begin
-			theta_out[y][x][0] = theta_in[y][x][0] ^ sum_sheet[(5+x-1)%5][0] ^ theta_parity[(x+1)%5];
-			for (Integer i = 1; i < valueOf(BitPerSubLane); i = i + 1)
-				theta_out[y][x][i] = theta_in[y][x][i] ^ sum_sheet[(5+x-1)%5][i] ^ sum_sheet[(x+1)%5][i-1];
+	for (Integer y = 0; y < np; y = y + 1) begin
+		for (Integer x = 0; x < ns; x = x + 1) begin
+			theta_out[y][x][0] = theta_in[y][x][0] ^ sum_sheet[(ns+x-1)%ns][0] ^ theta_parity[(x+1)%ns];
+			for (Integer i = 1; i < bitPerSubLane; i = i + 1)
+				theta_out[y][x][i] = theta_in[y][x][i] ^ sum_sheet[(ns+x-1)%ns][i] ^ sum_sheet[(x+1)%ns][i-1];
 		end
 	end
 

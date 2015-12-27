@@ -55,7 +55,7 @@ module mkKeccak (Keccak);
 	let theta_inp = k_to_sub_state(reg_data);
 
 	function fsel(pos,vec) = vec[pos];
-	let k_slice_theta_p_in = map(compose(pack, map(fsel(63))), reg_data);
+	let k_slice_theta_p_in = map(compose(pack, map(fsel(n-1))), reg_data);
 
 	let cit = chi_iota_theta(
 			chi_inp,
@@ -65,7 +65,7 @@ module mkKeccak (Keccak);
 			first_round,
 			first_block,
 			round_constant_signal_sub,
-			round_constant_signal[63]);
+			round_constant_signal[n-1]);
 
 	(* preempts = "do_init, (do_go, do_absorb_or_squeeze, permute)" *)
 	rule do_init (init_wire);
@@ -103,14 +103,14 @@ module mkKeccak (Keccak);
 		let first_round_new = first_round;
 		KState st = reg_data;
 
-		if (counter_block == 0 || counter_block != fromInteger(valueOf(NumSlices))) begin
-			for (Integer row = 0; row < 5; row = row + 1)
-				for (Integer col = 0; col < 5; col = col + 1)
+		if (counter_block == 0 || counter_block != fromInteger(numSlices)) begin
+			for (Integer row = 0; row < np; row = row + 1)
+				for (Integer col = 0; col < ns; col = col + 1)
 					st[row][col] = {
 							cit.theta[row][col],
-							reg_data[row][col][valueOf(N)-1:valueOf(BitPerSubLane)]
+							reg_data[row][col][n-1:bitPerSubLane]
 					};
-		end else if (counter_block == fromInteger(valueOf(NumSlices))) begin
+		end else if (counter_block == fromInteger(numSlices)) begin
 			//do_rho_pi
 			st = rho_pi_out;
 			counter_block_new = 0;
@@ -119,15 +119,15 @@ module mkKeccak (Keccak);
 			first_block_new = True;
 		end
 
-		if (counter_nr_rounds == fromInteger(valueOf(NumRound))) begin
+		if (counter_nr_rounds == fromInteger(numRound)) begin
 			counter_block_new = counter_block + 1;
-			for (Integer row = 0; row < 5; row = row + 1)
-				for (Integer col = 0; col < 5; col = col + 1)
+			for (Integer row = 0; row < np; row = row + 1)
+				for (Integer col = 0; col < ns; col = col + 1)
 					st[row][col] = {
 							cit.iota[row][col],
-							reg_data[row][col][valueOf(N)-1:valueOf(BitPerSubLane)]
+							reg_data[row][col][n-1:bitPerSubLane]
 					};
-			if (counter_block == fromInteger(valueOf(NumSlices)-1)) begin
+			if (counter_block == fromInteger(numSlices-1)) begin
 				// do the last part of the last round
 				permutation_computed <= True;
 				counter_nr_rounds_new = 0;

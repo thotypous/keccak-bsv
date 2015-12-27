@@ -16,7 +16,6 @@ import Vector::*;
 
 typedef  5 NumPlane;
 typedef  5 NumSheet;
-typedef  4 LogD;
 typedef 64 N;
 typedef 32 NumSlices;
 typedef 24 NumRound;
@@ -24,13 +23,22 @@ typedef 24 NumRound;
 // derived types
 
 typedef TLog#(NumSlices) BitsNumSlices;
-typedef TExp#(TSub#(6, BitsNumSlices)) BitPerSubLane;
+typedef TDiv#(N, NumSlices) BitPerSubLane;
 
 typedef Bit#(N) KLane;
-typedef Bit#(5) KRow;
-typedef Vector#(5,KRow) KSlice;
+typedef Bit#(NumSheet) KRow;
+typedef Vector#(NumPlane,KRow) KSlice;
 typedef Bit#(BitPerSubLane) SubLane;
-typedef Vector#(5,SubLane) SubPlane;
-typedef Vector#(5,SubPlane) SubState;
+typedef Vector#(NumSheet,SubLane) SubPlane;
+typedef Vector#(NumPlane,SubPlane) SubState;
 typedef Vector#(NumSheet,KLane) KPlane;
 typedef Vector#(NumPlane,KPlane) KState;
+
+// types converted to values
+
+Integer n = valueOf(N);
+Integer numSlices = valueOf(NumSlices);
+Integer numRound = valueOf(NumRound);
+Integer bitPerSubLane = valueOf(BitPerSubLane);
+Integer np = valueOf(NumPlane);
+Integer ns = valueOf(NumSheet);

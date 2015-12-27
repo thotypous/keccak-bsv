@@ -14,15 +14,15 @@ import KeccakGlobals::*;
 
 function KState pi(KState in);
 	KState out = ?;
-	for (Integer y = 0; y < 5; y = y + 1)
-		for (Integer x = 0; x < 5; x = x + 1)
-			for (Integer i = 0; i < 64; i = i + 1)
-				out[(2*x+3*y)%5][0*x+1*y][i] = in[y][x][i];
+	for (Integer y = 0; y < np; y = y + 1)
+		for (Integer x = 0; x < ns; x = x + 1)
+			for (Integer i = 0; i < n; i = i + 1)
+				out[(2*x+3*y)%np][(0*x+1*y)%ns][i] = in[y][x][i];
 	return out;
 endfunction
 
 function KState rho(KState in);
-	Integer rho_disp[5][5] = {
+	Integer rho_disp[np][ns] = {
 		/*[0][]*/ { 0,  1, 62, 28, 27},
 		/*[1][]*/ {36, 44,  6, 55, 20},
 		/*[2][]*/ { 3, 10, 43, 25, 39},
@@ -31,10 +31,10 @@ function KState rho(KState in);
 	};
 
 	KState out = ?;
-	for (Integer y = 0; y < 5; y = y + 1)
-		for (Integer x = 0; x < 5; x = x + 1)
-			for(Integer i = 0; i < 64; i = i + 1)
-				out[y][x][i] = in[y][x][(64+i-rho_disp[y][x])%64];
+	for (Integer y = 0; y < np; y = y + 1)
+		for (Integer x = 0; x < ns; x = x + 1)
+			for(Integer i = 0; i < n; i = i + 1)
+				out[y][x][i] = in[y][x][(n+i-rho_disp[y][x])%n];
 	return out;
 endfunction
 
