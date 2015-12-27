@@ -17,8 +17,8 @@ import Vector::*;
 typedef  5 NumPlane;
 typedef  5 NumSheet;
 typedef 64 N;
-typedef 32 NumSlices;
 typedef 24 NumRound;
+typedef 32 NumSlices;  // speed (number of cycles) vs area trade-off
 
 // derived types
 

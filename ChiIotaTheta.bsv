@@ -50,7 +50,9 @@ function Out chi_iota_theta(
 	SubState theta_in = first_round ? theta_inp : iota_out;
 	function fsel(pos,vec) = vec[pos];
 	function bxor(a,b) = a^b;
-	function b col_xor(Vector#(n,a) in) provisos (PrimUpdateable#(a,ae), Literal#(ae), Bitwise#(ae), PrimUpdateable#(b, ae));
+	function b col_xor(Vector#(np,a) in) provisos (PrimUpdateable#(a,ae), Literal#(ae), Bitwise#(ae), PrimUpdateable#(b, ae));
+		// computes {in[0][0]^...^in[np-1][0], ..., in[0][ns-1]^...^in[np-1][ns-1]}
+		// (the xor of all rows in each column)
 		b out = ?;
 		for (Integer x = 0; x < ns; x = x + 1)
 			out[x] = foldr(bxor, 0, map(fsel(x), in));

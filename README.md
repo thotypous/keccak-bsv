@@ -17,11 +17,11 @@ subsequently build the `mkKeccak.v` hardware core.
 
 ## Synthesis comparison
 
-To prove that our implementation is equivalent to the reference implementation, we
-synthesized both implementations several times targeting an Altera Cyclone V device
-(5CSEMA5F31C6), varying the Quartus II fitter seed each time. The figure below
-presents histograms for the clock frequency and logic utilization obtained by each
-implementation.
+To prove that our implementation is equivalent to the reference implementation,
+we synthesized both implementations (for NumSlices=32) several times targeting an
+Altera Cyclone V device (5CSEMA5F31C6), varying the Quartus II fitter seed each time.
+The figure below presents histograms for the clock frequency and logic utilization
+obtained by each implementation.
 
 ![Synthesis results](http://thotypous.github.io/keccak-bsv/synthesis.svg)
 
