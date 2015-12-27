@@ -19,6 +19,7 @@ typedef  5 NumSheet;
 typedef 64 N;
 typedef 24 NumRound;
 typedef 32 NumSlices;  // speed (number of cycles) vs area trade-off
+typedef 16 Rate; // Keccak rate (in number of N-bit words)
 
 // derived types
 
@@ -37,8 +38,9 @@ typedef Vector#(NumPlane,KPlane) KState;
 // types converted to values
 
 Integer n = valueOf(N);
-Integer numSlices = valueOf(NumSlices);
 Integer numRound = valueOf(NumRound);
+Integer numSlices = valueOf(NumSlices);
+Integer rate = valueOf(Rate);
 Integer bitPerSubLane = valueOf(BitPerSubLane);
 Integer np = valueOf(NumPlane);
 Integer ns = valueOf(NumSheet);

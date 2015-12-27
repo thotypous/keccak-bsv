@@ -19,7 +19,7 @@ import KeccakGlobals::*;
 (* synthesize *)
 module mkKeccakTb(Empty);
 	FIFOF#(LineContents) infifo <- mkSizedFIFOF(256);
-	Reg#(LBit#(16)) counter <- mkReg(0);
+	Reg#(LBit#(Rate)) counter <- mkReg(0);
 	Reg#(Bool) entryEnd <- mkReg(False);
 
 	let reader <- mkLineReader;
@@ -49,7 +49,7 @@ module mkKeccakTb(Empty);
 			endseq
 
 			action
-				counter <= 16;
+				counter <= fromInteger(rate);
 				entryEnd <= False;
 				keccak.init;
 			endaction
@@ -60,7 +60,7 @@ module mkKeccakTb(Empty);
 						case (infifo.first) matches
 							tagged Valid .n: keccak.absorb(n);
 							tagged Invalid: action
-								$display("ERROR: input size must be multiple of rate (1024 bits)");
+								$display("ERROR: input size must be multiple of the rate (%d bit)", rate*n);
 								$finish(1);
 							endaction
 						endcase
@@ -68,7 +68,7 @@ module mkKeccakTb(Empty);
 						infifo.deq;
 					end else begin
 						keccak.go;
-						counter <= 16;
+						counter <= fromInteger(rate);
 						entryEnd <= !isValid(infifo.first);
 					end
 				endaction

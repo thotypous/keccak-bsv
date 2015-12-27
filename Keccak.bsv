@@ -82,17 +82,14 @@ module mkKeccak (Keccak);
 		counter_block <= 0;
 		permutation_computed <= False;
 		first_block <= True;
-		first_round <= True;
-		// do the first semi round
+		first_round <= True;  // do the first semi round
 	endrule
 
 	rule do_absorb_or_squeeze (permutation_computed && (absorb_wire || squeeze_wire));
 		KState st = reg_data;
-		// absorb the input
-		// here rate is fixed to 1024
-		st[3][0] = reg_data[0][0] ^ absorb_dwire;
-		for (Integer row = 0; row < 3; row = row + 1)
-			st[row] = shiftInAtN(reg_data[row], reg_data[row+1][0]);
+		st[(rate-1)/ns][(rate-1)%ns] = reg_data[0][0] ^ absorb_dwire;
+		for (Integer i = 1; i < rate; i = i + 1)
+			st[(i-1)/ns][(i-1)%ns] = reg_data[i/ns][i%ns];
 		reg_data <= st;
 	endrule
 
